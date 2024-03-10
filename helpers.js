@@ -21,7 +21,7 @@ export function getQueryParamsAsString(query) {
 export function getFilteredForms(forms, filters) {
   let filtersJson
   let limit
-  
+
   // Guard against malformed JSON errors
   try {
     filtersJson = JSON.parse(filters)
@@ -55,22 +55,17 @@ function filterResponses(responses, filters) {
 
 function evaluateResponse(response, filters) {
   const filterChecks = filters.map(filter => {
-    for (let key in response) {
-      const field = response[key]
-      for (let index = 0; index < field.length; index++) {
-        const dto = field[index]
-        for (let dtoKey in dto) {
-          const value = dto[dtoKey]
-          if (isMatch(value, filter)) return true
-        }
-      }
-    }
+    response.questions.forEach(question => {
+      if (isMatch(question, filter)) return true
+    })
     return false
   })
   return filterChecks.every(it => it === true)
 }
 
-function isMatch(x, { condition, value }) {
+function isMatch(question, { id, condition, value }) {
+  if (question.id !== id) return false
+
   switch(condition) {
     case Conditions.equals:
       return x === value
