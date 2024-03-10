@@ -49,16 +49,16 @@ function filterForms(forms, filters, limit = 150) {
 }
 
 function filterResponses(responses, filters) {
-  if (!responses) return []
+  if (!Array.isArray(responses) || !responses) return []
+  if (!Array.isArray(filters) || !filters) return responses
   return responses.filter(it => evaluateResponse(it, filters))
 }
 
 function evaluateResponse(response, filters) {
   const filterChecks = filters.map(filter => {
-    response.questions.forEach(question => {
-      if (isMatch(question, filter)) return true
+    return response.questions.some(question => {
+      return isMatch(question, filter)
     })
-    return false
   })
   return filterChecks.every(it => it === true)
 }
@@ -68,13 +68,13 @@ function isMatch(question, { id, condition, value }) {
 
   switch(condition) {
     case Conditions.equals:
-      return x === value
+      return question.value === value
     case Conditions.does_not_equal:
-      return x !== value
+      return question.value !== value
     case Conditions.greater_than:
-      return x > value
+      return question.value > value
     case Conditions.less_than:
-      return x < value
+      return question.value < value
     default: 
       return false
   }
