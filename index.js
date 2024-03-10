@@ -19,8 +19,7 @@ app.get("/:formId/filteredResponses", async (req, res) => {
     const data = await response.json()
     const filteredData = getFilteredForms(data, req.query.filters)
     res.status(200).send(filteredData)
-  } catch(e) {
-    console.log(e)
+  } catch {
     res.status(404).send("Not found")
   }
 })
