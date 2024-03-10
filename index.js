@@ -6,15 +6,9 @@ import { getFilteredForms, getQueryParamsAsString } from "./helpers.js"
 const app = express()
 app.use(express.json())
 
-app.get("/", getFilteredResults)
-app.get("/:formId/filteredResponses", getFilteredResults)
-
-app.listen(process.env.PORT)
-console.log(`Server is listening on port ${process.env.PORT}`)
-
-async function getFilteredResults(req, res) {
+app.get("/:formId/filteredResponses", async (req, res) => {
   try {
-    const formId = req.params?.formId ?? process.env.FORM_ID
+    const { formId } = req.params
     const stringifiedQueries = getQueryParamsAsString(req.query)
     const response = await fetch(`${process.env.URL}/${formId}/submissions${stringifiedQueries}`, {
       headers: {
@@ -29,4 +23,7 @@ async function getFilteredResults(req, res) {
     console.log(e)
     res.status(404).send("Not found")
   }
-}
+})
+
+app.listen(process.env.PORT)
+console.log(`Server is listening on port ${process.env.PORT}`)
