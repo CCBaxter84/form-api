@@ -7,13 +7,11 @@ export function getQueryParamsAsString(query) {
   for (let index = 0; index < fields.length; index++) {
     const field = fields[index]
     const value = query[field]
-    if (!value) continue
-    if (!stringifiedQueries) {
-      stringifiedQueries += "?"
-    } else {
-      stringifiedQueries += "&"
+    const prefix = !stringifiedQueries ? "?" : "&"
+    
+    if (!!value) {
+      stringifiedQueries += `${prefix}${field}=${value}`
     }
-    stringifiedQueries += `${field}=${value}`
   }
   return stringifiedQueries
 }
